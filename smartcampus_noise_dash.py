@@ -62,7 +62,7 @@ def show_input(n_clicks):
       Nothing, this event doesn't update fronted.
 
     """
-    df.to_csv('data.csv')
+    df.to_csv('data.csv', index=False)
     return ''
 
 
