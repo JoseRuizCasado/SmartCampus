@@ -83,7 +83,11 @@ def streamFig(value):
     global df
     noise, timestamp = get_data()
     new_data = {'Noise': noise, 'Date': timestamp}
-    df = df.append(new_data, ignore_index=True)
+    if timestamp not in df['Date'].tolist():
+        # Update dataframe if timestamp of the requested
+        # is not in the dataframe
+        df = df.append(new_data, ignore_index=True)
+
     fig = go.Figure([go.Scatter(x=df['Date'], y=df['Noise'])])
     return(fig)
 

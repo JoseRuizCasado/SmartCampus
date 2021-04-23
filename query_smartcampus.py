@@ -22,42 +22,42 @@ def get_token():
       token.
 
     """
-  url = 'https://'+ORION_HOST+':6001/v3/auth/tokens'
-  headers = {'fiware-service': SERVICE, 'fiware-servicepath': SERVICE_PATH, 'Content-type': 'application/json'}
+    url = 'https://'+ORION_HOST+':6001/v3/auth/tokens'
+    headers = {'fiware-service': SERVICE, 'fiware-servicepath': SERVICE_PATH, 'Content-type': 'application/json'}
 
-  payload={
-    "auth": {
-        "identity": {
-            "methods": [
-                "password"
-            ],
-            "password": {
-                "user": {
-                    "domain": {
-                        "name": SERVICE
-                    },
-                    "name": USER,
-                    "password": PASSWORD
+    payload={
+        "auth": {
+            "identity": {
+                "methods": [
+                    "password"
+                ],
+                "password": {
+                    "user": {
+                        "domain": {
+                            "name": SERVICE
+                        },
+                        "name": USER,
+                        "password": PASSWORD
+                    }
                 }
-            }
-        },
-        "scope": {
-            "project": {
-                "domain": {
-                   "name": SERVICE
-                },
-                "name": SERVICE_PATH
+            },
+            "scope": {
+                "project": {
+                    "domain": {
+                    "name": SERVICE
+                    },
+                    "name": SERVICE_PATH
+                }
             }
         }
     }
-}
 
-  response=requests.post(url, headers=headers, data=json.dumps(payload), verify=False)
-  response.encoding='utf-8'
-  print("Status code: ", response.status_code)
-  #print(response.text)
-  print(response.headers["X-Subject-Token"])
-  return response.headers["X-Subject-Token"]
+    response=requests.post(url, headers=headers, data=json.dumps(payload), verify=False)
+    response.encoding='utf-8'
+    print("Status code: ", response.status_code)
+    #print(response.text)
+    print(response.headers["X-Subject-Token"])
+    return response.headers["X-Subject-Token"]
 
 
 def get_data():
