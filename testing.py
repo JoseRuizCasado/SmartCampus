@@ -53,7 +53,7 @@ app.layout = html.Div([content])
     Output('intermediate-value', 'children'),
     [Input('dowload-button', 'n_clicks')])
 def show_input(n_clicks):
-    """"Save DataFrame data to csv file.
+    """Save DataFrame data to csv file.
 
     Args:
       n_clicks: Number of clicks maked since app is running.
@@ -71,7 +71,7 @@ def show_input(n_clicks):
     [Input('interval', 'n_intervals')]
 )
 def streamFig(value):
-    """"Update grapah periodically. Make request to UMA SmartCampus and append data
+    """Update grapah periodically. Make request to UMA SmartCampus and append data
     to global DataFrame
     Args:
       value: Number of intervals executed since app is running.
