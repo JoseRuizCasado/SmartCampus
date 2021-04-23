@@ -18,11 +18,11 @@ try:
 except:
     pass
 
-fig_temp = go.Figure([go.Scatter(x=df_temp['Date'], y=df_temp['Temperature']), go.Scatter(x=df_temp['Date'], y=df_temp['Humidity'])])
+fig_temp = go.Figure([go.Scatter(name='Temperature', x=df_temp['Date'], y=df_temp['Temperature']), go.Scatter(name='Humidity', x=df_temp['Date'], y=df_temp['Humidity'])])
 
 content = html.Div(
     [
-        html.H1('Personal Stock Price Dashboard', 
+        html.H1('UMA Smartcampus Sensor Data', 
                 style={'textAlign': 'center'}),
         html.Hr(),
         dbc.Row(
@@ -132,4 +132,4 @@ def streamFigTemp(value):
 
 
 if __name__ == '__main__':
-    app.run_server(port='8083', debug=True)
+    app.run_server(port='8083')
