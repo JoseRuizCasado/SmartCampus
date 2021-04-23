@@ -9,10 +9,16 @@ from dash.dependencies import Input, Output, State
 from query_smartcampus import get_data
 
 
-df = pd.read_csv('data.csv')
+df_noise = pd.read_csv('data-noise.csv')
+fig_noise = go.Figure([go.Scatter(x=df_noise['Date'], y=df_noise['Data'])])
 
-fig = go.Figure([go.Scatter(x=df['Date'], y=df['Noise'])])
+df_temp = pd.read_csv('data-temp.csv')
+try:
+    del df_temp['Unnamed: 0']
+except:
+    pass
 
+fig_temp = go.Figure([go.Scatter(x=df_temp['Date'], y=df_temp['Temperature']), go.Scatter(x=df_temp['Date'], y=df_temp['Humidity'])])
 
 content = html.Div(
     [
@@ -21,7 +27,13 @@ content = html.Div(
         html.Hr(),
         dbc.Row(
             [
-                dbc.Col(dcc.Graph(id="graph", figure=fig),
+                dbc.Col(dcc.Graph(id="graph", figure=fig_noise),
+                        width={"size": 8, "offset": 2}),
+            ]
+        ),
+        dbc.Row(
+            [
+                dbc.Col(dcc.Graph(id="graph-temp", figure=fig_temp),
                         width={"size": 8, "offset": 2}),
             ]
         ),
@@ -62,7 +74,8 @@ def show_input(n_clicks):
       Nothing, this event doesn't update fronted.
 
     """
-    df.to_csv('data.csv', index=False)
+    df_noise.to_csv('data-noise.csv', index=False)
+    df_temp.to_csv('data-temp.csv', index=False)
     return ''
 
 
@@ -80,15 +93,41 @@ def streamFig(value):
       The new figure object to update in front end.
 
     """
-    global df
-    noise, timestamp = get_data()
+    global df_noise
+    (noise, timestamp), (temp, hum, ts) = get_data()
     new_data = {'Noise': noise, 'Date': timestamp}
-    if timestamp not in df['Date'].tolist():
+    if timestamp not in df_noise['Date'].tolist():
         # Update dataframe if timestamp of the requested
         # is not in the dataframe
-        df = df.append(new_data, ignore_index=True)
+        df_noise = df_noise.append(new_data, ignore_index=True)
 
-    fig = go.Figure([go.Scatter(x=df['Date'], y=df['Noise'])])
+    fig = go.Figure([go.Scatter(x=df_noise['Date'], y=df_noise['Data'])])
+    return(fig)
+
+
+@app.callback(
+    Output('graph-temp', 'figure'),
+    [Input('interval', 'n_intervals')]
+)
+def streamFigTemp(value):
+    """Update grapah periodically. Make request to UMA SmartCampus and append data
+    to global DataFrame
+    Args:
+      value: Number of intervals executed since app is running.
+
+    Returns:
+      The new figure object to update in front end.
+
+    """
+    global df_temp
+    (noise, timestamp), (temp, hum, ts) = get_data()
+    new_data = {'Temperature': temp, 'Humidity': hum, 'Date': ts}
+    if timestamp not in df_temp['Date'].tolist():
+        # Update dataframe if timestamp of the requested
+        # is not in the dataframe
+        df_temp = df_temp.append(new_data, ignore_index=True)
+
+    fig = go.Figure([go.Scatter(x=df_temp['Date'], y=df_temp['Temperature']), go.Scatter(x=df_temp['Date'], y=df_temp['Humidity'])])
     return(fig)
 
 
